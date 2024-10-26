@@ -1,0 +1,17 @@
+import{S as w,W as V,ah as v,ag as y,r as b,ai as h,ax as R}from"./GLTFLoader-Cpm_xSlR.js";import{F as I}from"./Pass-8nf9LS6g.js";class C{constructor(o,l,s){this.variables=[],this.currentTextureIndex=0;let g=b;const T={passThruTexture:{value:null}},p=m(F(),T),c=new I(p);this.setDataType=function(t){return g=t,this},this.addVariable=function(t,e,a){const n=this.createShaderMaterial(e),r={name:t,initialValueTexture:a,material:n,dependencies:null,renderTargets:[],wrapS:null,wrapT:null,minFilter:h,magFilter:h};return this.variables.push(r),r},this.setVariableDependencies=function(t,e){t.dependencies=e},this.init=function(){if(s.capabilities.maxVertexTextures===0)return"No support for vertex shader textures.";for(let t=0;t<this.variables.length;t++){const e=this.variables[t];e.renderTargets[0]=this.createRenderTarget(o,l,e.wrapS,e.wrapT,e.minFilter,e.magFilter),e.renderTargets[1]=this.createRenderTarget(o,l,e.wrapS,e.wrapT,e.minFilter,e.magFilter),this.renderTexture(e.initialValueTexture,e.renderTargets[0]),this.renderTexture(e.initialValueTexture,e.renderTargets[1]);const a=e.material,n=a.uniforms;if(e.dependencies!==null)for(let r=0;r<e.dependencies.length;r++){const i=e.dependencies[r];if(i.name!==e.name){let u=!1;for(let d=0;d<this.variables.length;d++)if(i.name===this.variables[d].name){u=!0;break}if(!u)return"Variable dependency not found. Variable="+e.name+", dependency="+i.name}n[i.name]={value:null},a.fragmentShader=`
+uniform sampler2D `+i.name+`;
+`+a.fragmentShader}}return this.currentTextureIndex=0,null},this.compute=function(){const t=this.currentTextureIndex,e=this.currentTextureIndex===0?1:0;for(let a=0,n=this.variables.length;a<n;a++){const r=this.variables[a];if(r.dependencies!==null){const i=r.material.uniforms;for(let u=0,d=r.dependencies.length;u<d;u++){const x=r.dependencies[u];i[x.name].value=x.renderTargets[t].texture}}this.doRenderTarget(r.material,r.renderTargets[e])}this.currentTextureIndex=e},this.getCurrentRenderTarget=function(t){return t.renderTargets[this.currentTextureIndex]},this.getAlternateRenderTarget=function(t){return t.renderTargets[this.currentTextureIndex===0?1:0]},this.dispose=function(){c.dispose();const t=this.variables;for(let e=0;e<t.length;e++){const a=t[e];a.initialValueTexture&&a.initialValueTexture.dispose();const n=a.renderTargets;for(let r=0;r<n.length;r++)n[r].dispose()}};function f(t){t.defines.resolution="vec2( "+o.toFixed(1)+", "+l.toFixed(1)+" )"}this.addResolutionDefine=f;function m(t,e){e=e||{};const a=new w({name:"GPUComputationShader",uniforms:e,vertexShader:S(),fragmentShader:t});return f(a),a}this.createShaderMaterial=m,this.createRenderTarget=function(t,e,a,n,r,i){return t=t||o,e=e||l,a=a||R,n=n||R,r=r||h,i=i||h,new V(t,e,{wrapS:a,wrapT:n,minFilter:r,magFilter:i,format:v,type:g,depthBuffer:!1})},this.createTexture=function(){const t=new Float32Array(o*l*4),e=new y(t,o,l,v,b);return e.needsUpdate=!0,e},this.renderTexture=function(t,e){T.passThruTexture.value=t,this.doRenderTarget(p,e),T.passThruTexture.value=null},this.doRenderTarget=function(t,e){const a=s.getRenderTarget(),n=s.xr.enabled,r=s.shadowMap.autoUpdate;s.xr.enabled=!1,s.shadowMap.autoUpdate=!1,c.material=t,s.setRenderTarget(e),c.render(s),c.material=p,s.xr.enabled=n,s.shadowMap.autoUpdate=r,s.setRenderTarget(a)};function S(){return`void main()	{
+
+	gl_Position = vec4( position, 1.0 );
+
+}
+`}function F(){return`uniform sampler2D passThruTexture;
+
+void main() {
+
+	vec2 uv = gl_FragCoord.xy / resolution.xy;
+
+	gl_FragColor = texture2D( passThruTexture, uv );
+
+}
+`}}}export{C as G};
